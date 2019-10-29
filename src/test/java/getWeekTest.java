@@ -3,8 +3,12 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
+
 import getDays.getWeek;
+import Sort.sort;
+
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,12 +20,13 @@ import static org.junit.Assert.*;
 
 public class getWeekTest {
     getWeek SUT = new getWeek();
+    sort s = new sort();
     List<List<Object>> Sunday = new ArrayList<>();
-    List<List<Object>> Monday = null;
-    List<List<Object>> Tuesday = null;
-    List<List<Object>> Wednesday = null;
-    List<List<Object>> Thursday = null;
-    List<List<List<Object>>> week = null;
+    List<List<Object>> Monday = new ArrayList<>();
+    List<List<Object>> Tuesday = new ArrayList<>();
+    List<List<Object>> Wednesday = new ArrayList<>();
+    List<List<Object>> Thursday = new ArrayList<>();
+    List<List<Object>> week = new ArrayList<>();
 
     Sheets service;
     private static final String APPLICATION_NAME = "setup.WeeklyPointWinner";
@@ -29,6 +34,7 @@ public class getWeekTest {
     private final String id = "1i1fFjYdsmMy0frZzL0WGF5f4vWcsuVESSzc1Ecsoc_E";
 
     @Before
+    @Test
     public void setup() throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
@@ -105,46 +111,53 @@ public class getWeekTest {
         Wednesday = Sunday;
         Thursday = Sunday;
 
-        week.add(Sunday);
-        week.add(Monday);
-        week.add(Tuesday);
-        week.add(Wednesday);
-        week.add(Thursday);
+        week.addAll(Sunday);
+        week.addAll(Monday);
+        week.addAll(Tuesday);
+        week.addAll(Wednesday);
+        week.addAll(Thursday);
+
     }
 
     @Test
-    void getWeek_Returns_Week_From_Given_Tab_UnSorted(){
+    public void getWeek_Returns_Week_From_Given_Tab_UnSorted(){
         String page = "Template";
-        List<List<List<Object>>> expected = week;
-        List<List<List<Object>>> got = SUT.getWeek(page,service,id);
-        for(int k = 0; k<expected.size(); k++){
-            for(int i = 0; i<expected.get(k).size();i++){
-                assertEquals(expected.get(k).get(i).toString(),got.get(k).get(i).toString());
+        List<List<Object>> expected = week;
+        try {
+            List<List<Object>> got = SUT.getWeek(page, service, id);
+            for (int k = 0; k < expected.size(); k++) {
+                assertEquals(expected.get(k).toString(),got.get(k).toString());
             }
-        }
+        }catch(IOException e){e.printStackTrace();}
     }
 
     @Test
-    void getWeek_Returns_Week_From_Given_Tab_Sorted(){
+    public void getWeek_Returns_Week_From_Given_Tab_Sorted(){
         String page = "Template";
-        List<List<List<Object>>> expected = week;
-        List<List<List<Object>>> got = SUT.getWeek(page,service,id,true);
-        for(int k = 0; k<expected.size(); k++){
-            for(int i = 0; i<expected.get(k).size();i++){
-                assertEquals(expected.get(k).get(i).toString(),got.get(k).get(i).toString());
+        List<List<Object>> expected = week;
+        s.sort(expected);
+        try {
+            List<List<Object>> got = SUT.getWeek(page, service, id, true);
+            for (int k = 0; k < expected.size(); k++) {
+                for (int i = 0; i < expected.get(k).size(); i++) {
+                    assertEquals(expected.get(k).get(i).toString(), got.get(k).get(i).toString());
+                }
             }
-        }
+        }catch(IOException e){e.printStackTrace();}
     }
 
+
     @Test
-    void getWeek_Returns_Week_From_Given_Tab_Sorted_False(){
+    public void getWeek_Returns_Week_From_Given_Tab_Sorted_False(){
         String page = "Template";
-        List<List<List<Object>>> expected = week;
-        List<List<List<Object>>> got = SUT.getWeek(page,service,id,false);
-        for(int k = 0; k<expected.size(); k++){
-            for(int i = 0; i<expected.get(k).size();i++){
-                assertEquals(expected.get(k).get(i).toString(),got.get(k).get(i).toString());
+        List<List<Object>> expected = week;
+        try {
+            List<List<Object>> got = SUT.getWeek(page, service, id, false);
+            for (int k = 0; k < expected.size(); k++) {
+                for (int i = 0; i < expected.get(k).size(); i++) {
+                    assertEquals(expected.get(k).get(i).toString(), got.get(k).get(i).toString());
+                }
             }
-        }
+        }catch(IOException e){e.printStackTrace();}
     }
 }

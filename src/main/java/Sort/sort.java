@@ -3,7 +3,7 @@ package Sort;
 import java.util.List;
 
 public class sort {
-    swap swap = new swap();
+    private swap swap = new swap();
 
     public void sort(List<List<Object>> list){
         int[] array = new int[list.size()];
